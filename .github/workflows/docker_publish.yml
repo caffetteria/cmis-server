@@ -37,4 +37,4 @@ jobs:
           file: Dockerfile
           platforms: linux/amd64
           push: true
-          tags: fugeritorg/opencmis:${{ github.ref_name }},fugeritorg/fj-daogen-quarkus-demo:latest
+          tags: fugeritorg/opencmis:${{ github.ref_name }},fugeritorg/opencmis:latest
