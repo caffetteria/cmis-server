@@ -89,7 +89,8 @@ The following environment variables must be passed to the container to configure
 
 | VARIABLE    | MANDATORY | DEFAULT VALUE | DESCRIPTION                                                                                                                                |
 |-------------|-----------|---------------|--------------------------------------------------------------------------------------------------------------------------------------------|
-| PROXY_VHOST | NO        | `localhost`   | specify the virtual host name to reach eXo Platform                                                                                        |
+| SKIP_PROXY  | NO        | `true`        | if 'true' proxy configuration will be skipped                                                                                              |
+| PROXY_VHOST | NO        | `localhost`   | specify the virtual host name to reach                                                                                                     |
 | PROXY_PORT  | NO        | -             | which port to use on the proxy server ? (if empty it will automatically defined regarding EXO_PROXY_SSL value : true => 443 / false => 80) |
 | PROXY_SSL   | NO        | `true`        | is ssl activated on the proxy server ? (true / false)                                                                                      |
 

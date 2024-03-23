@@ -26,6 +26,7 @@ replace_in_file() {
 [ -z "${HTTP_THREAD_MIN}" ] && HTTP_THREAD_MIN="10"
 [ -z "${HTTP_THREAD_MAX}" ] && HTTP_THREAD_MAX="200"
 
+[ -z "${SKIP_PROXY}" ] && SKIP_PROXY="true"
 [ -z "${PROXY_VHOST}" ] && PROXY_VHOST="localhost"
 [ -z "${PROXY_SSL}" ] && PROXY_SSL="true"
 [ -z "${PROXY_PORT}" ] && {
@@ -56,28 +57,32 @@ xmlstarlet ed -L -s "/Server/Service/Connector" -t attr -n "maxThreads" -v "${HT
   exit 1
 }
 
-# Proxy configuration
-xmlstarlet ed -L -s "/Server/Service/Connector" -t attr -n "proxyName" -v "${PROXY_VHOST}" ${INSTALL_DIR}/conf/server.xml || {
-  echo "ERROR during xmlstarlet processing (adding Connector proxyName)"
-  exit 1
-}
-
-if [ "${PROXY_SSL}" = "true" ]; then
-  xmlstarlet ed -L -s "/Server/Service/Connector" -t attr -n "scheme" -v "https" \
-    -s "/Server/Service/Connector" -t attr -n "secure" -v "false" \
-    -s "/Server/Service/Connector" -t attr -n "proxyPort" -v "${PROXY_PORT}" \
-    ${INSTALL_DIR}/conf/server.xml || {
-    echo "ERROR during xmlstarlet processing (configuring Connector proxy ssl)"
-    exit 1
-  }
+if [ "${SKIP_PROXY}" = "true" ]; then
+  echo "Skipping tomcat proxy configuration"
 else
-  xmlstarlet ed -L -s "/Server/Service/Connector" -t attr -n "scheme" -v "http" \
-    -s "/Server/Service/Connector" -t attr -n "secure" -v "false" \
-    -s "/Server/Service/Connector" -t attr -n "proxyPort" -v "${PROXY_PORT}" \
-    ${INSTALL_DIR}/conf/server.xml || {
-    echo "ERROR during xmlstarlet processing (configuring Connector proxy)"
+  # Proxy configuration
+  xmlstarlet ed -L -s "/Server/Service/Connector" -t attr -n "proxyName" -v "${PROXY_VHOST}" ${INSTALL_DIR}/conf/server.xml || {
+    echo "ERROR during xmlstarlet processing (adding Connector proxyName)"
     exit 1
   }
+
+  if [ "${PROXY_SSL}" = "true" ]; then
+    xmlstarlet ed -L -s "/Server/Service/Connector" -t attr -n "scheme" -v "https" \
+      -s "/Server/Service/Connector" -t attr -n "secure" -v "false" \
+      -s "/Server/Service/Connector" -t attr -n "proxyPort" -v "${PROXY_PORT}" \
+      ${INSTALL_DIR}/conf/server.xml || {
+      echo "ERROR during xmlstarlet processing (configuring Connector proxy ssl)"
+      exit 1
+    }
+  else
+    xmlstarlet ed -L -s "/Server/Service/Connector" -t attr -n "scheme" -v "http" \
+      -s "/Server/Service/Connector" -t attr -n "secure" -v "false" \
+      -s "/Server/Service/Connector" -t attr -n "proxyPort" -v "${PROXY_PORT}" \
+      ${INSTALL_DIR}/conf/server.xml || {
+      echo "ERROR during xmlstarlet processing (configuring Connector proxy)"
+      exit 1
+    }
+  fi
 fi
 
 # Add a new valve to replace the proxy ip by the client ip (just before the end of Host)
