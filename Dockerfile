@@ -44,12 +44,22 @@ RUN set -x \
     && cd ${BASE_DIR}/webapps/cmis \
     && unzip -qq /tmp/chemistry-opencmis-server-${CMIS_SERVER_TYPE}-${OPENCMIS_VERSION}.war -d .
 
+RUN set -x \
+    && cd /tmp \
+    && curl -LO https://corretto.aws/downloads/resources/8.402.08.1/amazon-corretto-8.402.08.1-linux-x64.tar.gz \
+    && mkdir ${BASE_DIR}/jdk-8 \
+    && cd ${BASE_DIR}/jdk-8
+
+RUN set -x \
+    && tar xf /tmp/amazon-corretto-8.402.08.1-linux-x64.tar.gz \
+    && mv /tmp/amazon-corretto-8.402.08.1-linux-x64/* ${BASE_DIR}/jdk-8
+
 COPY bin/setenv.sh ${BASE_DIR}/bin
 
 #####
 # Final stage 
 #####
-FROM exoplatform/jdk:8-ubuntu-1804
+FROM ubuntu:22.04
 
 # thanks to eXo Platform
 # https://github.com/exo-docker
@@ -86,5 +96,5 @@ VOLUME /data
 
 USER tomcat
 
-ENTRYPOINT ["/usr/local/bin/tini", "--"]
+#ENTRYPOINT ["/usr/local/bin/tini", "--"]
 CMD [ "/opt/cmis-server/bin/catalina.sh", "run" ]

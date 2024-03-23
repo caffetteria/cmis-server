@@ -182,3 +182,12 @@ export CATALINA_OPTS="${CATALINA_OPTS:-} -Xmx${JVM_SIZE_MAX} -Xms${JVM_SIZE_MIN}
 echo "INFO Configuring cmis server..."
 cp -v /repository-template.properties ${INSTALL_DIR}/webapps/cmis/WEB-INF/classes/repository.properties
 replace_in_file ${INSTALL_DIR}/webapps/cmis/WEB-INF/classes/repository.properties "@CMIS_USERS_PASSWORD@" "${CMIS_USERS_PASSWORD}"
+
+export JAVA_HOME=${INSTALL_DIR}/jdk-8
+export PATH=${INSTALL_DIR}/bin:${PATH}
+
+echo "debug 1"
+ls -l ${INSTALL_DIR}
+
+echo "debug 2"
+ls -l ${INSTALL_DIR}/jdk-8
