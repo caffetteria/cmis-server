@@ -1,6 +1,7 @@
 # CMIS 1.1 compliant opencmis server <!-- omit in toc -->
 
 [![Keep a Changelog v1.1.0 badge](https://img.shields.io/badge/changelog-Keep%20a%20Changelog%20v1.1.0-%23E05735)](CHANGELOG.md)
+[![Docker images](https://img.shields.io/badge/dockerhub-images-important.svg?logo=Docker)](https://hub.docker.com/repository/docker/fugeritorg/opencmis/general)
 
 - [CMIS 1.1 compliant opencmis server](#cmis-11-compliant-opencmis-server)
   - [Docker](#docker)

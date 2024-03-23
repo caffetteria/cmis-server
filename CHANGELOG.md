@@ -11,9 +11,11 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ### Added
 
+- docker publish workflow
 - gitignore
 - this CHANGELOG
 - SKIP_PROXY env
+- cmis server based on exoplatform/jdk:8-ubuntu-1804
 
 ### Changed
 
