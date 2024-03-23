@@ -4,7 +4,7 @@ ARG BASE_DIR=/opt/cmis-server
 #####
 # Preparation stage 
 #####
-FROM exoplatform/jdk:8-ubuntu-1804 AS install
+FROM amazoncorretto:8-alpine3.19-jdk AS install
 
 ARG BASE_DIR
 # Tomcat Version
@@ -16,8 +16,8 @@ ENV OPENCMIS_VERSION 1.1.0
 # fileshare or inmemory
 ARG CMIS_SERVER_TYPE=fileshare  
 
-RUN apt-get update
-RUN apt-get install -y curl
+RUN apk add curl
+
 RUN set -x \
   && mkdir -p /opt \
   && curl -LO https://archive.apache.org/dist/tomcat/tomcat-${TOMCAT_VERSION_MAJOR}/v${TOMCAT_VERSION_FULL}/bin/apache-tomcat-${TOMCAT_VERSION_FULL}.tar.gz \
@@ -44,22 +44,12 @@ RUN set -x \
     && cd ${BASE_DIR}/webapps/cmis \
     && unzip -qq /tmp/chemistry-opencmis-server-${CMIS_SERVER_TYPE}-${OPENCMIS_VERSION}.war -d .
 
-RUN set -x \
-    && cd /tmp \
-    && curl -LO https://corretto.aws/downloads/resources/8.402.08.1/amazon-corretto-8.402.08.1-linux-x64.tar.gz \
-    && mkdir ${BASE_DIR}/jdk-8 \
-    && cd ${BASE_DIR}/jdk-8
-
-RUN set -x \
-    && tar xf /tmp/amazon-corretto-8.402.08.1-linux-x64.tar.gz \
-    && mv /tmp/amazon-corretto-8.402.08.1-linux-x64/* ${BASE_DIR}/jdk-8
-
 COPY bin/setenv.sh ${BASE_DIR}/bin
 
 #####
 # Final stage 
 #####
-FROM ubuntu:22.04
+FROM amazoncorretto:8-alpine3.19-jdk
 
 # thanks to eXo Platform
 # https://github.com/exo-docker
@@ -74,23 +64,17 @@ EXPOSE 8080
 
 ENV CMIS_USERS_PASSWORD=cm1sp@ssword
 
-RUN apt-get -qq update \
-  && apt-get -qq -y upgrade ${_APT_OPTIONS} \
-  && apt-get -qq -y install ${_APT_OPTIONS} xmlstarlet \
-  && apt-get -qq -y autoremove \
-  && apt-get -qq -y clean \
-  && rm -rf /var/lib/apt/lists/*
+RUN apk add xmlstarlet
 
-# Prepare users and install directory
 RUN set -x \
-  && groupadd --gid 999 tomcat && useradd --gid tomcat -u 999 -s /bin/bash tomcat \
-  && mkdir -p /opt /data/cmis \
-  && chown -R tomcat:tomcat /data
+  && adduser -D -u 9992 -s /bin/bash tomcat \
+    && mkdir -p /opt /data/cmis \
+    && chown -R tomcat:tomcat /data
 
 COPY repository-template.properties /
 
 # Copy the tomcat server already configured
-COPY --chown=999 --from=install ${BASE_DIR} ${BASE_DIR}
+COPY --chown=9992 --from=install ${BASE_DIR} ${BASE_DIR}
 
 VOLUME /data
 
