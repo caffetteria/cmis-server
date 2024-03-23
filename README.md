@@ -1,5 +1,7 @@
 # CMIS 1.1 compliant opencmis server <!-- omit in toc -->
 
+[![Keep a Changelog v1.1.0 badge](https://img.shields.io/badge/changelog-Keep%20a%20Changelog%20v1.1.0-%23E05735)](CHANGELOG.md)
+
 - [CMIS 1.1 compliant opencmis server](#cmis-11-compliant-opencmis-server)
   - [Docker](#docker)
   - [How to use it](#how-to-use-it)

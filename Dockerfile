@@ -16,7 +16,8 @@ ENV OPENCMIS_VERSION 1.1.0
 # fileshare or inmemory
 ARG CMIS_SERVER_TYPE=fileshare  
 
-RUN apt-get update && apt-get install curl
+RUN apt-get update
+RUN apt-get install -y curl
 RUN set -x \
   && mkdir -p /opt \
   && curl -LO https://archive.apache.org/dist/tomcat/tomcat-${TOMCAT_VERSION_MAJOR}/v${TOMCAT_VERSION_FULL}/bin/apache-tomcat-${TOMCAT_VERSION_FULL}.tar.gz \
@@ -38,7 +39,7 @@ RUN set -x \
 
 RUN set -x \
     && cd /tmp \
-    && curl -LO http://central.maven.org/maven2/org/apache/chemistry/opencmis/chemistry-opencmis-server-${CMIS_SERVER_TYPE}/1.1.0/chemistry-opencmis-server-${CMIS_SERVER_TYPE}-${OPENCMIS_VERSION}.war \
+    && curl -LO https://repo1.maven.org/maven2/org/apache/chemistry/opencmis/chemistry-opencmis-server-${CMIS_SERVER_TYPE}/1.1.0/chemistry-opencmis-server-${CMIS_SERVER_TYPE}-${OPENCMIS_VERSION}.war \
     && mkdir ${BASE_DIR}/webapps/cmis \
     && cd ${BASE_DIR}/webapps/cmis \
     && unzip -qq /tmp/chemistry-opencmis-server-${CMIS_SERVER_TYPE}-${OPENCMIS_VERSION}.war -d .
@@ -50,7 +51,9 @@ COPY bin/setenv.sh ${BASE_DIR}/bin
 #####
 FROM exoplatform/jdk:8-ubuntu-1804
 
-LABEL maintainer="eXo Platform <docker@exoplatform.com>"
+# thanks to eXo Platform
+# https://github.com/exo-docker
+LABEL maintainer="Caffetteria <caffetteria@gmail.com>"
 
 ARG BASE_DIR
 ENV INSTALL_DIR=${BASE_DIR}
