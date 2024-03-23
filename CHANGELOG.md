@@ -7,6 +7,10 @@ and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0
 
 ## [Unreleased]
 
+### Added
+
+- build of image for linux/arm64
+
 ### Changed
 
 - base image amazoncorretto:8-alpine3.19-jdk (faster startup)
