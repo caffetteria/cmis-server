@@ -37,26 +37,6 @@ replace_in_file() {
   esac
 }
 
-## Remove file comments
-xmlstarlet ed -L -d "//comment()" ${INSTALL_DIR}/conf/server.xml || {
-  echo "ERROR during xmlstarlet processing (xml comments removal)"
-  exit 1
-}
-
-## Remove AJP connector
-xmlstarlet ed -L -d '//Connector[@protocol="AJP/1.3"]' ${INSTALL_DIR}/conf/server.xml || {
-  echo "ERROR during xmlstarlet processing (AJP connector removal)"
-  exit 1
-}
-
-# Tomcat HTTP Thread pool configuration
-xmlstarlet ed -L -s "/Server/Service/Connector" -t attr -n "maxThreads" -v "${HTTP_THREAD_MAX}" \
-  -s "/Server/Service/Connector" -t attr -n "minSpareThreads" -v "${HTTP_THREAD_MIN}" \
-  ${INSTALL_DIR}/conf/server.xml || {
-  echo "ERROR during xmlstarlet processing (configuring threads)"
-  exit 1
-}
-
 if [ "${SKIP_PROXY}" = "true" ]; then
   echo "Skipping tomcat proxy configuration"
 else
